@@ -1,104 +1,40 @@
-
-# Module 5 Final Project
-
+# Module 5 Project
+### Machine Learning Classification
 
 ## Introduction
+This project is an analysis of a number of Starcraft 2 players. The goal is to classify them into their appropriate league based on their playing statistics and habits. In total, there are 7 leagues in the Starcraft 2 ladder: Bronze, Silver, Gold, Platinum, Diamond, Master, and Grandmaster. For the purposes of the final results, they are separated into three groups: Bronze, Silver, and Gold are in the Beginner group, Platinum and Diamond are in the Advanced tier, and Master and Grandmaster are in the Expert tier.
 
-In this lesson, we'll review all the guidelines and specifications for the final project for Module 5.
+Dataset Source: https://www.kaggle.com/danofer/skillcraft/data#SkillCraft.csv
 
+## Methodology
+This particular dataset was rather robust in the number of features it included, and surprisingly had no missing information, making the cleaning of the data rather easy. I was able to very easily separate the data into a feature database and a target database, the latter comprising only of the League data for a given player.
 
-## Objectives
+After separating the data, I created a train-test split, and due to the vast difference between the number of players in each tier (the Grandmaster tier only ever has a total of 200 players on it, so as one player obtains this rank, another loses it, and of those 200 players, only 35 are in this database, while the Platinum and Diamond tiers each have around 800 players in this database) I then used SMOTE to synthetically equalize each tier in my training feature database.
 
-* Understand all required aspects of the Final Project for Module 5
-* Understand all required deliverables
-* Understand what constitutes a successful project
+From there, I normalized my equalized training feature database and testing feature database separately (to avoid data-bleed between the two) and then began running various different models to find which model worked best.
 
-## Final Project Summary
+Initially, my best model was around 35% accuracy, even after removing some multi-collinear features, and running PCA so I reduced my number of classes into Beginner, Advanced, and Expert tiers, as mentioned above. This nearly doubled my accuracy scores immediately, and in the end I was able to achieve an accuracy score of around 66%.
 
-Congratulations! You've made it through another _intense_ module, and now you're ready to show off your newfound Machine Learning skills!
+#### Initial Model
+This is prior to reducing the number of classes or any removal of multi-collinear features.
+![](files/initialmodel.PNG)
 
-![awesome](https://raw.githubusercontent.com/learn-co-curriculum/dsc-mod-5-project/master/smart.gif)
+#### Correlation Matrix
+This was used along with the Feature Ranking from the initial model to select appropriate features to remove based on largest amount of multi-collinearity with least effect on the model.
+![](files/correlation.png)
 
-All that remains for Module 5 is to complete the final project!
+#### Final Model
+This is after reducing the classes down to three, and removing the APM, NumberOfPACs, and ComplexUnitsMade features.
+![](files/finalmodel.PNG)
 
-## The Project
+#### Confusion Matrix
+This shows that a majority of the misclassifications were in the Beginner tier, as explained in the Results below.
+![](files/confusionmatrix.png)
 
-For this project, you're going to select a dataset of your choosing and create a classification model. You'll start by identifying a problem you can solve with classification, and then identify a dataset. You'll then use everything you've learned about Data Science and Machine Learning thus far to source a dataset, preprocess and explore it, and then build and interpret a classification model that answers your chosen question.
+## Results
+My best model in the end was a Random Forest, after reducing the number of classes and removing the three worst multi-collinear features based on which features affected the model the least by comparison. This model's accuracy score was 66%, however, most of the misclassifications occurred in the Beginner tier. I believe the reason for this is that there are a number of players that have the ability and statistics to play in higher tiers, but for whatever reason are not able to devote the necessary time to achieve the higher ranks and thus are stuck in the Bronze, Silver, or Gold leagues. Because of these anomalies, I'm ok with this level of accuracy in my model. For now, at least.
 
+## Future Work
+In the future I would like to find a way to improve that accuracy even more, perhaps by reducing the weight of the Total Hours feature to allow the model to focus more on the stats of the players than the time they're able to put into the game.
 
-### Selecting a Data Set
-
-We encourage you to be very thoughtful when identifying your problem and selecting your data set--an overscoped project goal or a poor data set can quickly bring an otherwise promising project to a grinding halt.
-
-To help you select an appropriate data set for this project, we've set some guidelines:
-
-1. Your dataset should work for classification. The classification task can be either binary or multiclass, as long as it's a classification model.   
-
-2. Your dataset needs to be of sufficient complexity. Try to avoid picking an overly simple dataset. Try to avoid extremely small datasets, as well as the most common datasets like titanic, iris, MNIST, etc. We want to see all the steps of the Data Science Process in this project--it's okay if the dataset is mostly clean, but we expect to see some preprocessing and exploration. See the following section, **_Data Set Constraints_**, for more information on this.   
-
-3. On the other end of the spectrum, don't pick a problem that's too complex, either. Stick to problems that you have a clear idea of how you can use machine learning to solve it. For now, we recommend you stay away from overly complex problems in the domains of Natural Language Processing or Computer Vision--although those domains make use of Supervised Learning, they come with a lot of other special requirements and techniques that you don't know yet (but you'll learn soon!). If you're chosen problem feels like you've overscoped, then it probably is. If you aren't sure if your problem scope is appropriate, double check with your instructor!  
-
-4. **_Serious Bonus Points_** if some or all of the data is data you have to source yourself through web scraping or interacting with a 3rd party API! Having projects that show off your ability to source data effectively make you look that much more impressive when showing your work off to potential employers!
-
-### Data Set Constraints
-
-When selecting a data set, be sure to take into consideration the following constraints:
-
-1. Your data set can't be one we've already worked with in any labs.
-2. Your data set should contain a minimum of 1000 rows.    
-3. Your data set should contain a minimum of 10 predictor columns, before any one-hot encoding is performed.   
-4. Your instructor must provide final approval on your data set.
-
-### Problem First, or Data First?
-
-There are two ways that you can about getting started: **_Problem-First_** or **_Data-First_**.
-
-**_Problem-First_**: Start with a problem that you want to solve with classification, and then try to find the data you need to solve it.  If you can't find any data to solve your problem, then you should pick another problem.
-
-**_Data-First_**: Take a look at some of the most popular internet repositories of cool data sets we've listed below. If you find a data set that's particularly interesting for you, then it's totally okay to build your problem around that data set.
-
-There are plenty of amazing places that you can get your data from. We recommend you start looking at data sets in some of these resources first:
-
-* [UCI Machine Learning Datasets Repository](https://archive.ics.uci.edu/ml/datasets.html)
-* [Kaggle Datasets](https://www.kaggle.com/datasets)
-* [Awesome Datasets Repo on Github](https://github.com/awesomedata/awesome-public-datasets)
-* [New York City Open Data Portal](https://opendata.cityofnewyork.us/)
-* [Inside AirBNB ](http://insideairbnb.com/)
-
-
-## The Deliverables
-
-For online students, your completed project should contain the following four deliverables:
-
-1. A **_Jupyter Notebook_** containing any code you've written for this project. This work will need to be pushed to your GitHub repository in order to submit your project.
-
-2. An organized **README.md** file in the GitHub repository that describes the contents of the repository. This file should be the source of information for navigating through the repository. 
-
-3. A **_[Blog Post](https://github.com/learn-co-curriculum/dsc-welcome-blogging)_**.
-
-4. An **_"Executive Summary" PowerPoint Presentation_** that gives a brief overview of your problem/dataset, and each step of the OSEMN process.
-
-Note: On-campus students may have different deliverables, please speak with your instructor.
-
-### Jupyter Notebook Must-Haves
-
-For this project, your Jupyter Notebook should meet the following specifications:
-
-**_Organization/Code Cleanliness_**
-
-* The notebook should be well organized, easy to follow, and code is commented where appropriate.  
-    * Level Up: The notebook contains well-formatted, professional looking markdown cells explaining any substantial code. All functions have docstrings that act as professional-quality documentation.  
-* The notebook is written to technical audiences with a way to both understand your approach and reproduce your results. The target audience for this deliverable is other data scientists looking to validate your findings.  
-
-**_Process, Methodology, and Findings_**
-
-* Your notebook should contain a clear record of your process and methodology for exploring and preprocessing your data, building and tuning a model, and interpreting your results.
-* We recommend you use the OSEMN process to help organize your thoughts and stay on track.
-
-### Blog Post Must-Haves
-
-Refer back to the [Blogging Guidelines](https://github.com/learn-co-curriculum/dsc-welcome-blogging) for the technical requirements and blog ideas.
-
-## Grading Rubric 
-
-Online students can find a PDF of the grading rubric for the project [here](https://github.com/learn-co-curriculum/dsc-mod-5-project/blob/master/module5_project_rubric.pdf). _Note: On-campus students may have different requirements, please speak with your instructor._ 
+I would also like to create a model for each tier to try and further classify them into their appropriate League, rather than just their overall grouping.
